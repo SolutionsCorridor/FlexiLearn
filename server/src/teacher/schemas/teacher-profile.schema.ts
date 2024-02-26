@@ -5,6 +5,8 @@ import { Teacher } from './teacher.schema';
 
 @Schema()
 export class TeacherProfile extends Document {
+    @Prop() 
+    name: string;
     @Prop({ type: Teacher })
     teacher: Teacher;
 

@@ -96,6 +96,8 @@ const TeacherProfile = () => {
         gettingTeacherProfile();
     }, [id]);
 
+    console.log("ID", id);
+
     const [image, setImage] = useState<string | null>(null);
     const [cv, setCV] = useState<string | null>(null);
     const [uploadedCVName, setUploadedCVName] = useState<string | null>(null);
