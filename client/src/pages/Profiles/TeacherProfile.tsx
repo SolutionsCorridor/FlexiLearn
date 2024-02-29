@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -24,15 +22,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import {
-    getTeacherProfile,
-    postTeacherProfile,
-    updateTeacherProfile,
+    getTeacher,
+    postTeacher,
+    updateTeacher,
 } from "@/services/teacher/profile.service";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// import { changeStatus } from "@/services/auth.service";
+import { changeStatus } from "@/services/auth.service";
 import { Link, useNavigate } from "react-router-dom";
 
 
@@ -63,7 +61,6 @@ const formSchema = z.object({
     }),
     availabilityHours: z.string().transform((v) => Number(v) || 0),
     hourlyRate: z.string().transform((v) => Number(v) || 0),
-    cv: z.string(),
     longitude: z.number().transform((v) => Number(v) || 0),
     latitude: z.number().transform((v) => Number(v) || 0),
 });
@@ -77,57 +74,30 @@ type UserData = {
 const TeacherProfile = () => {
 
     const [userData, setUserData] = useState<UserData | null>(null);
-    // const [location, setLocation] = useState<{
-    //     latitude: number;
-    //     longitude: number;
-    // } | null>(null);
-    const [isClient, setIsClient] = useState(false);
 
     const navigate = useNavigate();
-    const pathname = window.location.pathname;
+
+    const id = localStorage.getItem("userId");
 
     useEffect(() => {
-        setIsClient(true);
-    }, []);
-    const id = pathname.split("/")[2];
-
-    useEffect(() => {
-        // getFullName();
         gettingTeacherProfile();
-    }, [id]);
-
-    console.log("ID", id);
+    }, []);
 
     const [image, setImage] = useState<string | null>(null);
     const [cv, setCV] = useState<string | null>(null);
     const [uploadedCVName, setUploadedCVName] = useState<string | null>(null);
 
-    // const getFullName = async () => {
-    //     const { data: userData, error: userError } = await supabase
-    //         .from("User") // Replace with your table name
-    //         .select("fullName")
-    //         .eq("userId", id)
-    //         .single();
-
-    //     if (userError) {
-    //         // Handle the error
-    //         console.error("Error fetching user data:", userError.message);
-    //     } else if (userData) {
-    //         const fullName = userData.fullName;
-    //         // Now you can use the fullName value as needed
-    //         form.setValue("fullName", fullName || "");
-    //     } else {
-    //         // User not found or no data returned
-    //         console.log("User not found or no data returned");
-    //     }
-    // };
 
     const gettingTeacherProfile = () => {
-        getTeacherProfile(id)
+
+        if (!id) return null;
+
+        getTeacher(id)
             .then((userData: any) => {
                 setUserData(userData);
                 const { data } = userData;
                 if (data) {
+                    form.setValue("fullName", data.fullName || "");
                     form.setValue("aboutMe", data.aboutMe || "");
                     form.setValue("education", data.education || "");
                     form.setValue("experience", data.experience || "");
@@ -150,8 +120,8 @@ const TeacherProfile = () => {
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const uploadedImage = event.target.files?.[0];
+        const reader = new FileReader();
         if (uploadedImage) {
-            const reader = new FileReader();
             reader.onload = (e) => {
                 if (e.target?.result) {
                     setImage(e.target.result as string);
@@ -168,8 +138,7 @@ const TeacherProfile = () => {
             reader.onload = (e) => {
                 if (e.target?.result) {
                     setCV(e.target.result as string);
-                    form.setValue("cv", e.target.result as string);
-                    setUploadedCVName(uploadedCV.name); // Set the uploaded file name
+                    setUploadedCVName(uploadedCV.name);
                 }
             };
             reader.readAsDataURL(uploadedCV);
@@ -219,17 +188,19 @@ const TeacherProfile = () => {
     const onSubmit = (data: z.infer<typeof formSchema>) => {
         if (!image) {
             toast.error("Kindly Upload Image");
-        } else if (!data.cv) {
+        } else if (!cv) {
             toast.error("Kindly Upload CV");
         } else {
-            const newData = {
+            let newData: any = {
                 ...data,
                 profileImage: image,
-                teacherId: id
+                cv: cv,
             };
 
             if (userData?.data) {
-                updateTeacherProfile(id, newData)
+                if (!id) return null;
+
+                updateTeacher(id, newData)
                     .then(() => {
                         toast.success("Profile Updated");
                     })
@@ -238,10 +209,17 @@ const TeacherProfile = () => {
                         toast.error("Failed to update profile");
                     });
             } else {
-                postTeacherProfile(newData)
+                if (!id) return null;
+
+                newData = {
+                    ...newData,
+                    teacherId: id,
+                };
+
+                postTeacher(newData)
                     .then(() => {
                         toast.success("Profile Created");
-                        // changeStatus(id, "assessment");
+                        changeStatus(id, "assessment");
                         navigate(`/teacher/assessment`);
                     })
                     .catch((error) => {
@@ -254,259 +232,209 @@ const TeacherProfile = () => {
 
     return (
         <>
-            {isClient && (
-                <div className="flex flex-col items-center justify-center">
-                    <Toaster />
-                    <div className="flex flex-col items-center justify-center mt-16">
-                        <Link to="/">
-                            <img
-                                src="/src/assets/images/flexiLearn.png"
-                                width={200}
-                                height={200}
-                                alt="FlexiLearn Logo"
+            <div className="flex flex-col items-center justify-center">
+                <Toaster />
+                <div className="flex flex-col items-center justify-center mt-16">
+                    <Link to="/">
+                        <img
+                            src="/src/assets/images/flexiLearn.png"
+                            width={200}
+                            height={200}
+                            alt="FlexiLearn Logo"
+                        />
+                    </Link>
+                    <p className="py-6 mx-2 text-xl font-semibold text-gray-700">
+                        Teacher Profile Details
+                    </p>
+                </div>
+                <Form {...form}>
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="my-4 w-[20rem] space-y-6 pb-20 sm:w-[30rem] md:w-[50rem]"
+                    >
+                        <div className="flex flex-col items-center justify-center gap-4 p-4 border border-gray-300 rounded-md shadow-md">
+                            <label
+                                htmlFor="uploadInput"
+                                className="text-lg font-semibold text-gray-700"
+                            >
+                                Upload Profile Image
+                            </label>
+                            <Input
+                                type="file"
+                                id="uploadInput"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="hidden"
                             />
-                        </Link>
-                        <p className="py-6 mx-2 text-xl font-semibold text-gray-700">
-                            Teacher Profile Details
-                        </p>
-                    </div>
-                    <Form {...form}>
-                        <form
-                            onSubmit={form.handleSubmit(onSubmit)}
-                            className="my-4 w-[20rem] space-y-6 pb-20 sm:w-[30rem] md:w-[50rem]"
-                        >
-                            <div className="flex flex-col items-center justify-center gap-4 p-4 border border-gray-300 rounded-md shadow-md">
-                                <label
-                                    htmlFor="uploadInput"
-                                    className="text-lg font-semibold text-gray-700"
-                                >
-                                    Upload Profile Image
-                                </label>
-                                <Input
-                                    type="file"
-                                    id="uploadInput"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                    className="hidden"
-                                />
-                                <div
-                                    className={`flex h-48 w-48 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-gray-300 ${image ? "border-transparent" : "hover:border-red-500"
-                                        }`}
-                                    onClick={handleClick}
-                                >
-                                    {image ? (
-                                        <img
-                                            src={image}
-                                            alt="Uploaded"
-                                            className="object-cover w-48 h-48 rounded-full"
+                            <div
+                                className={`flex h-48 w-48 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-gray-300 ${image ? "border-transparent" : "hover:border-red-500"
+                                    }`}
+                                onClick={handleClick}
+                            >
+                                {image ? (
+                                    <img
+                                        src={image}
+                                        alt="Uploaded"
+                                        className="object-cover w-48 h-48 rounded-full"
+                                    />
+                                ) : (
+                                    <div className="text-center">
+                                        <Avatar className="h-44 w-44">
+                                            <AvatarImage src="/src/assets/images/teacher.jpg" />
+                                            <AvatarFallback>PF</AvatarFallback>
+                                        </Avatar>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <FormField
+                            name="fullName"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Full Name
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder={`Enter your full name`}
+                                            {...field}
+                                            className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
                                         />
-                                    ) : (
-                                        <div className="text-center">
-                                            <Avatar className="h-44 w-44">
-                                                <AvatarImage src="/src/assets/images/teacher.jpg" />
-                                                <AvatarFallback>PF</AvatarFallback>
-                                            </Avatar>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            name="aboutMe"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        About You
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder={`Enter your details`}
+                                            {...field}
+                                            className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            name="education"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Education
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder={`Enter your Educational Details`}
+                                            {...field}
+                                            className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            name="experience"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Experience
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder={`Enter your Experience`}
+                                            {...field}
+                                            className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            name="language"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Language
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            value={field.value}
+                                        >
+                                            <SelectTrigger className="w-[16rem]">
+                                                <SelectValue placeholder="Select language" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Language</SelectLabel>
+                                                    <SelectItem value="English">English</SelectItem>
+                                                    <SelectItem value="Urdu">Urdu</SelectItem>
+                                                    <SelectItem value="Arabic">Arabic</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            name="gender"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Gender
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            value={field.value}
+                                        >
+                                            <SelectTrigger className="w-[16rem]">
+                                                <SelectValue placeholder="Select gender " />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Gender</SelectLabel>
+                                                    <SelectItem value="Male">Male</SelectItem>
+                                                    <SelectItem value="Female">Female</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <div className="flex items-center justify-start gap-3">
                             <FormField
-                                name="fullName"
+                                name="latitude"
                                 control={form.control}
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Full Name
+                                            Latitude
                                         </FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder={`Enter your full name`}
-                                                {...field}
-                                                className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                name="aboutMe"
-                                control={form.control}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg font-semibold text-gray-700">
-                                            About You
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder={`Enter your details`}
-                                                {...field}
-                                                className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                name="education"
-                                control={form.control}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Education
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder={`Enter your Educational Details`}
-                                                {...field}
-                                                className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                name="experience"
-                                control={form.control}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Experience
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder={`Enter your Experience`}
-                                                {...field}
-                                                className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                name="language"
-                                control={form.control}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Language
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                value={field.value}
-                                            >
-                                                <SelectTrigger className="w-[16rem]">
-                                                    <SelectValue placeholder="Select language" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Language</SelectLabel>
-                                                        <SelectItem value="English">English</SelectItem>
-                                                        <SelectItem value="Urdu">Urdu</SelectItem>
-                                                        <SelectItem value="Arabic">Arabic</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                name="gender"
-                                control={form.control}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Gender
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                value={field.value}
-                                            >
-                                                <SelectTrigger className="w-[16rem]">
-                                                    <SelectValue placeholder="Select language" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Gender</SelectLabel>
-                                                        <SelectItem value="Male">Male</SelectItem>
-                                                        <SelectItem value="Female">Female</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <div className="flex items-center justify-start gap-3">
-                                <FormField
-                                    name="latitude"
-                                    control={form.control}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-lg font-semibold text-gray-700">
-                                                Latitude
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    readOnly
-                                                    {...field}
-                                                    className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    name="longitude"
-                                    control={form.control}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-lg font-semibold text-gray-700">
-                                                Longitude
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    readOnly
-                                                    {...field}
-                                                    className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <div className="flex items-center justify-center">
-                                    <Button
-                                        onClick={getLocation}
-                                        className="px-10 py-4 mt-8 text-white rounded-md text-md "
-                                    >
-                                        Get Location
-                                    </Button>
-                                </div>
-                            </div>
-
-                            <FormField
-                                name="subject"
-                                control={form.control}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Subject
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder={`Enter your subject`}
+                                                readOnly
                                                 {...field}
                                                 className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
                                             />
@@ -517,49 +445,16 @@ const TeacherProfile = () => {
                             />
 
                             <FormField
-                                name="availability"
+                                name="longitude"
                                 control={form.control}
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Availability
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                value={field.value}
-                                            >
-                                                <SelectTrigger className="w-[16rem]">
-                                                    <SelectValue placeholder="Select availability" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Availability</SelectLabel>
-                                                        <SelectItem value="Remote">Remote</SelectItem>
-                                                        <SelectItem value="In-person">In-person</SelectItem>
-                                                        <SelectItem value="Both">Both</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                name="availabilityHours"
-                                control={form.control}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Availability (Hrs)
+                                            Longitude
                                         </FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder={`Enter your Availability Hours`}
-                                                type="number"
-                                                min={1}
+                                                readOnly
                                                 {...field}
                                                 className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
                                             />
@@ -568,98 +463,180 @@ const TeacherProfile = () => {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
-                                name="hourlyRate"
-                                control={form.control}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Hourly hourlyRate ($)
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder={`Enter your Hourly hourlyRate`}
-                                                type="number"
-                                                min={1}
-                                                {...field}
-                                                className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <div className="flex flex-col items-center justify-center h-64 gap-4 p-4 border border-gray-300 rounded-md shadow-md cursor-pointer">
-                                <label
-                                    htmlFor="cvInput"
-                                    className="text-lg font-semibold text-gray-700"
-                                >
-                                    Upload or Edit CV (PDF)
-                                </label>
-                                <div className="flex items-center gap-2 mt-2">
-                                    {cv ? (
-                                        <div className="flex items-center">
-                                            <a
-                                                href={cv}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-blue-500 hover:underline"
-                                            >
-                                                View CV
-                                            </a>
-                                            <span className="mx-2">or</span>
-                                            <label
-                                                htmlFor="cvInput"
-                                                className="text-blue-500 cursor-pointer hover:underline"
-                                            >
-                                                Edit CV
-                                            </label>
-                                            <input
-                                                type="file"
-                                                accept=".pdf"
-                                                onChange={handleCVUpload}
-                                                className="hidden"
-                                                id="cvInput"
-                                            />
-                                        </div>
-                                    ) : (
-                                        <>
-                                            <input
-                                                type="file"
-                                                accept=".pdf"
-                                                onChange={handleCVUpload}
-                                                className="hidden"
-                                                id="cvInput"
-                                            />
-                                            <label
-                                                htmlFor="cvInput"
-                                                className="text-blue-500 cursor-pointer hover:underline"
-                                            >
-                                                Upload CV
-                                            </label>
-                                        </>
-                                    )}
-                                </div>
-                                {uploadedCVName && (
-                                    <p className="mt-2 text-sm text-gray-500">
-                                        Uploaded File: {uploadedCVName}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="flex items-center justify-center mt-10">
+                            <div className="flex items-center justify-center">
                                 <Button
-                                    type="submit"
-                                    className="px-16 py-6 text-white rounded-md text-md"
+                                    onClick={getLocation}
+                                    className="px-10 py-4 mt-8 text-white rounded-md text-md "
                                 >
-                                    Submit
+                                    Get Location
                                 </Button>
                             </div>
-                        </form>
-                    </Form>
-                </div>
-            )}
+                        </div>
+
+                        <FormField
+                            name="subject"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Subject
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder={`Enter your subject`}
+                                            {...field}
+                                            className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            name="availability"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Availability
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            value={field.value}
+                                        >
+                                            <SelectTrigger className="w-[16rem]">
+                                                <SelectValue placeholder="Select availability" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Availability</SelectLabel>
+                                                    <SelectItem value="Remote">Remote</SelectItem>
+                                                    <SelectItem value="In-person">In-person</SelectItem>
+                                                    <SelectItem value="Both">Both</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            name="availabilityHours"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Availability (Hrs)
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder={`Enter your Availability Hours`}
+                                            type="number"
+                                            min={1}
+                                            {...field}
+                                            className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            name="hourlyRate"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Hourly hourlyRate ($)
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder={`Enter your Hourly hourlyRate`}
+                                            type="number"
+                                            min={1}
+                                            {...field}
+                                            className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <div className="flex flex-col items-center justify-center h-64 gap-4 p-4 border border-gray-300 rounded-md shadow-md cursor-pointer">
+                            <label
+                                htmlFor="cvInput"
+                                className="text-lg font-semibold text-gray-700"
+                            >
+                                Upload or Edit CV (PDF)
+                            </label>
+                            <div className="flex items-center gap-2 mt-2">
+                                {cv ? (
+                                    <div className="flex items-center">
+                                        <a
+                                            href={cv}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-blue-500 hover:underline"
+                                        >
+                                            View CV
+                                        </a>
+                                        <span className="mx-2">or</span>
+                                        <label
+                                            htmlFor="cvInput"
+                                            className="text-blue-500 cursor-pointer hover:underline"
+                                        >
+                                            Edit CV
+                                        </label>
+                                        <input
+                                            type="file"
+                                            accept=".pdf"
+                                            onChange={handleCVUpload}
+                                            className="hidden"
+                                            id="cvInput"
+                                        />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <input
+                                            type="file"
+                                            accept=".pdf"
+                                            onChange={handleCVUpload}
+                                            className="hidden"
+                                            id="cvInput"
+                                        />
+                                        <label
+                                            htmlFor="cvInput"
+                                            className="text-blue-500 cursor-pointer hover:underline"
+                                        >
+                                            Upload CV
+                                        </label>
+                                    </>
+                                )}
+                            </div>
+                            {uploadedCVName && (
+                                <p className="mt-2 text-sm text-gray-500">
+                                    Uploaded File: {uploadedCVName}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex items-center justify-center mt-10">
+                            <Button
+                                type="submit"
+                                className="px-16 py-6 text-white rounded-md text-md"
+                            >
+                                Submit
+                            </Button>
+                        </div>
+                    </form>
+                </Form>
+            </div>
         </>
     );
 };

@@ -1,4 +1,4 @@
-import { IsString, IsNumber } from 'class-validator';
+import { IsString, IsLatitude, IsLongitude, IsInt } from 'class-validator';
 
 export class CreateTeacherDto {
     @IsString()
@@ -8,25 +8,85 @@ export class CreateTeacherDto {
     readonly fullName: string;
 
     @IsString()
-    readonly qualification: string;
+    aboutMe?: string;
 
     @IsString()
-    readonly status: string;
+    education?: string;
 
-    @IsNumber()
-    readonly experience: number;
+    @IsString()
+    experience?: string;
+
+    @IsString()
+    language?: string;
+
+    @IsString()
+    gender?: string;
+
+    @IsLatitude()
+    longitude?: number;
+
+    @IsLongitude()
+    latitude?: number;
+
+    @IsString()
+    subject?: string;
+
+    @IsString()
+    availability?: string;
+
+    @IsInt()
+    availabilityHours?: number;
+
+    @IsInt()
+    hourlyRate?: number;
+
+    @IsString()
+    profileImage?: string;
+
+    @IsString()
+    cv?: string;
 }
-
 export class UpdateTeacherDto {
-    @IsString()
-    readonly qualification?: string;
 
     @IsString()
     readonly fullName?: string;
 
     @IsString()
-    readonly status?: string;
+    aboutMe?: string;
 
-    @IsNumber()
-    readonly experience?: number;
+    @IsString()
+    education?: string;
+
+    @IsString()
+    experience?: string;
+
+    @IsString()
+    language?: string;
+
+    @IsString()
+    gender?: string;
+
+    @IsLatitude()
+    longitude?: number;
+
+    @IsLongitude()
+    latitude?: number;
+
+    @IsString()
+    subject?: string;
+
+    @IsString()
+    availability?: string;
+
+    @IsInt()
+    availabilityHours?: number;
+
+    @IsInt()
+    hourlyRate?: number;
+
+    @IsString()
+    profileImage?: string;
+
+    @IsString()
+    cv?: string;
 }

@@ -29,6 +29,7 @@ export const login = async (email: string, password: string) => {
         localStorage.setItem("expiresIn", response.data.backendTokens.expiresIn);
         localStorage.setItem("userType", response.data.user.role)
         localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("userId", response.data.user._id);
 
         return response;
     } catch (error) {
@@ -58,6 +59,7 @@ export const register = async (
                 role: userType,
             }
         );
+
         return response;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -67,6 +69,26 @@ export const register = async (
             }
         }
         // For other types of errors, you can throw them or handle them as you see fit
+        throw error;
+    }
+};
+
+export const changeStatus = async (userId: string, status: string) => {
+    try {
+        const response = await axios.put(
+            `${SERVER_URL}/user/change-status/${userId}`,
+            {
+                status,
+            }
+        );
+
+        return response;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response && error.response.status === 401) {
+                throw new Error("Unauthorized: Email or password is incorrect.");
+            }
+        }
         throw error;
     }
 };

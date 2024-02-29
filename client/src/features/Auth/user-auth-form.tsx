@@ -91,7 +91,7 @@ export function UserAuthForm({
         setAuth(response.data);
         toast.success("SignUp Successful. Please Login");
         setTimeout(() => {
-          navigate(`/profile/${response.data.user.role}`);
+          navigate(`/login`);
         }, 2000);
       } catch (error) {
         setIsLoading(false);

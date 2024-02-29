@@ -6,9 +6,9 @@ import { CreateStudentDto, UpdateStudentDto } from '../dto/student.dto';
 export class StudentController {
     constructor(private readonly studentService: StudentService) { }
 
-    @Post()
-    create(@Body() createStudentDto: CreateStudentDto) {
-        return this.studentService.createStudent(createStudentDto);
+    @Get()
+    findAll() {
+        return this.studentService.getStudents();
     }
 
     @Get(':studentId')
@@ -16,10 +16,15 @@ export class StudentController {
         return this.studentService.getStudent(studentId);
     }
 
-    // @Put(':studentId')
-    // update(@Param('studentId') studentId: string, @Body() updateStudentDto: UpdateStudentDto) {
-    //     return this.studentService.updateStudent(studentId, updateStudentDto);
-    // }
+    @Post()
+    create(@Body() createStudentDto: CreateStudentDto) {
+        return this.studentService.createStudent(createStudentDto);
+    }
+
+    @Put(':studentId')
+    update(@Param('studentId') studentId: string, @Body() updateStudentDto: UpdateStudentDto) {
+        return this.studentService.updateStudent(studentId, updateStudentDto);
+    }
 
     @Delete(':studentId')
     remove(@Param('studentId') studentId: string) {

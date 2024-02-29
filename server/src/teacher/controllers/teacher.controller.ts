@@ -6,14 +6,19 @@ import { CreateTeacherDto, UpdateTeacherDto } from '../dto/teacher.dto';
 export class TeacherController {
     constructor(private readonly teacherService: TeacherService) { }
 
-    @Post()
-    create(@Body() createTeacherDto: CreateTeacherDto) {
-        return this.teacherService.createTeacher(createTeacherDto);
+    @Get()
+    findAll() {
+        return this.teacherService.getTeachers();
     }
 
     @Get(':teacherId')
     findOne(@Param('teacherId') teacherId: string) {
         return this.teacherService.getTeacher(teacherId);
+    }
+
+    @Post()
+    create(@Body() createTeacherDto: CreateTeacherDto) {
+        return this.teacherService.createTeacher(createTeacherDto);
     }
 
     @Put(':teacherId')

@@ -11,15 +11,20 @@ export class ParentController {
         return this.parentService.createParent(createParentDto);
     }
 
+    @Get()
+    findAll() {
+        return this.parentService.getParents();
+    }
+
     @Get(':parentId')
     findOne(@Param('parentId') parentId: string) {
         return this.parentService.getParent(parentId);
     }
 
-    // @Put(':parentId')
-    // update(@Param('parentId') parentId: string, @Body() updateParentDto: UpdateParentDto) {
-    //     return this.parentService.updateParent(parentId, updateParentDto);
-    // }
+    @Put(':parentId')
+    update(@Param('parentId') parentId: string, @Body() updateParentDto: UpdateParentDto) {
+        return this.parentService.updateParent(parentId, updateParentDto);
+    }
 
     @Delete(':parentId')
     remove(@Param('parentId') parentId: string) {

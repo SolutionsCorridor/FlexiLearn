@@ -1,17 +1,38 @@
-import { IsString, IsNumber } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateStudentDto {
     @IsString()
     readonly studentId: string;
 
     @IsString()
-    readonly fullName: string;
+    fullName?: string;
+
+    @IsString()
+    dob?: string;
+
+    @IsString()
+    language?: string;
+
+    @IsString()
+    gender?: string;
+
+    @IsString()
+    profileImage?: string;
 }
 
 export class UpdateStudentDto {
     @IsString()
-    readonly qualification?: string;
+    readonly fullName?: string;
 
     @IsString()
-    readonly fullName?: string;
+    dob?: string;
+
+    @IsString()
+    language?: string;
+
+    @IsString()
+    gender?: string;
+
+    @IsString()
+    profileImage?: string;
 }

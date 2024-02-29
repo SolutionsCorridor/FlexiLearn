@@ -19,6 +19,7 @@ import { S3ClientModule } from './s3-client/s3-client.module';
     }),
 
     MongooseModule.forRoot(process.env.DATABASE_URL),
+
     UserModule,
     AuthModule,
     TeacherModule,

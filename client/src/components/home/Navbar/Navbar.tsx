@@ -51,7 +51,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const isAuth = localStorage.getItem("isAuthenticated") 
   
-
   const handleLinkClick = (href: string) => {
     setCurrentLink(href);
   };

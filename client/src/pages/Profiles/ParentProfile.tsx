@@ -22,9 +22,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import {
-    getParentProfile,
-    postParentProfile,
-    updateParentProfile,
+    getParent,
+    postParent,
+    updateParent,
 } from "@/services/parent/profile.service";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -32,6 +32,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { changeStatus } from "@/services/auth.service";
 import { Link, useNavigate } from "react-router-dom";
+import { changeStatus } from "@/services/auth.service";
 
 const formSchema = z.object({
     fullName: z.string().min(2, {
@@ -56,46 +57,25 @@ type UserData = {
 
 const ParentProfile = () => {
     const [userData, setUserData] = useState<UserData | null>(null);
-    const [isClient, setIsClient] = useState(false);
     const navigate = useNavigate();
-    const pathname = window.location.pathname;
+
+    const id = localStorage.getItem("userId");
 
     useEffect(() => {
-        setIsClient(true);
-    }, []);
-
-    const id = pathname.split("/")[2];
-
-    useEffect(() => {
-        // getFullName();
         gettingParentProfile();
     }, [id]);
 
     const [image, setImage] = useState<string | null>(null);
 
-    // const getFullName = async () => {
-    //     const { data: userData, error: userError } = await supabase
-    //         .from("User") 
-    //         .select("fullName")
-    //         .eq("userId", id)
-    //         .single();
-
-    //     if (userError) {
-    //         console.error("Error fetching user data:", userError.message);
-    //     } else if (userData) {
-    //         const fullName = userData.fullName;
-    //         form.setValue("fullName", fullName || "");
-    //     } else {
-    //         console.log("User not found or no data returned");
-    //     }
-    // };
-
     const gettingParentProfile = () => {
-        getParentProfile(id)
+        if (!id) return null;
+
+        getParent(id)
             .then((userData: any) => {
                 setUserData(userData);
                 const { data } = userData;
                 if (data) {
+                    form.setValue("fullName", data.fullName || "");
                     form.setValue("phoneNo", data.phoneNo || "");
                     form.setValue("language", data.language || "");
                     form.setValue("gender", data.gender || "");
@@ -137,16 +117,15 @@ const ParentProfile = () => {
         if (!image) {
             toast.error("Kindly Upload Image");
         } else {
-            const newData = {
+            let newData: any = {
                 ...data,
                 profileImage: image,
-                parentId: id
             };
 
-            console.log(userData);
-
             if (userData?.data) {
-                updateParentProfile(id, newData)
+                if (!id) return null;
+
+                updateParent(id, newData)
                     .then(() => {
                         toast.success("Profile Updated");
                     })
@@ -155,11 +134,17 @@ const ParentProfile = () => {
                         toast.error("Failed to update profile");
                     });
             } else {
-                console.log("In post");
-                postParentProfile(newData)
+                if (!id) return null;
+
+                newData = {
+                    ...newData,
+                    parentId: id,
+                };
+
+                postParent(newData)
                     .then(() => {
                         toast.success("Profile Created");
-                        // changeStatus(id, "verfied");
+                        changeStatus(id, "verfied");
                         navigate(`/explore`);
                     })
                     .catch((error) => {
@@ -172,174 +157,172 @@ const ParentProfile = () => {
 
     return (
         <>
-            {isClient && (
-                <div className="flex flex-col items-center justify-center">
-                    <Toaster />
-                    <div className="flex flex-col items-center justify-center mt-16 ">
-                        <Link to="/">
-                            <img
-                                src="/src/assets/images/flexiLearn.png"
-                                width={200}
-                                height={200}
-                                alt="FlexiLearn Logo"
-                            />
-                        </Link>
-                        <p className="py-6 mx-2 text-xl font-semibold text-gray-700">
-                            Parent Profile Details
-                        </p>
-                    </div>
-
-                    <Form {...form}>
-                        <form
-                            onSubmit={form.handleSubmit(onSubmit)}
-                            className="my-4 w-[20rem] space-y-6 pb-20 sm:w-[30rem] md:w-[50rem]"
-                        >
-                            <div className="flex flex-col items-center justify-center gap-4 p-4 border border-gray-300 rounded-md shadow-md">
-                                <label
-                                    htmlFor="uploadInput"
-                                    className="text-lg font-semibold text-gray-700"
-                                >
-                                    Upload Profile Image
-                                </label>
-                                <Input
-                                    type="file"
-                                    id="uploadInput"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                    className="hidden"
-                                />
-                                <div
-                                    className={`flex h-48 w-48 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-gray-300 ${image ? "border-transparent" : "hover:border-red-500"
-                                        }`}
-                                    onClick={handleClick}
-                                >
-                                    {image ? (
-                                        <img
-                                            src={image}
-                                            alt="Uploaded"
-                                            className="object-cover w-48 h-48 rounded-full"
-                                        />
-                                    ) : (
-                                        <div className="text-center">
-                                            <Avatar className="h-44 w-44">
-                                                <AvatarImage src="/src/assets/images/teacher.jpg" />
-                                                <AvatarFallback>PF</AvatarFallback>
-                                            </Avatar>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <FormField
-                                control={form.control}
-                                name="fullName"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Full Name
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder={`Enter your full name`}
-                                                {...field}
-                                                className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="phoneNo"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Phone No
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder={`Enter your phone number`}
-                                                {...field}
-                                                className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                name="language"
-                                control={form.control}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Language
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                value={field.value}
-                                            >
-                                                <SelectTrigger className="w-[16rem]">
-                                                    <SelectValue placeholder="Select language" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Language</SelectLabel>
-                                                        <SelectItem value="English">English</SelectItem>
-                                                        <SelectItem value="Urdu">Urdu</SelectItem>
-                                                        <SelectItem value="Arabic">Arabic</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                name="gender"
-                                control={form.control}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-lg font-semibold text-gray-700">
-                                            Gender
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                value={field.value}
-                                            >
-                                                <SelectTrigger className="w-[16rem]">
-                                                    <SelectValue placeholder="Select language" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Gender</SelectLabel>
-                                                        <SelectItem value="Male">Male</SelectItem>
-                                                        <SelectItem value="Female">Female</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <div className="flex items-center justify-center mt-10">
-                                <Button
-                                    type="submit"
-                                    className="px-16 py-6 text-white bg-red-500 rounded-md text-md hover:bg-red-600"
-                                >
-                                    Submit
-                                </Button>
-                            </div>
-                        </form>
-                    </Form>
+            <div className="flex flex-col items-center justify-center">
+                <Toaster />
+                <div className="flex flex-col items-center justify-center mt-16 ">
+                    <Link to="/">
+                        <img
+                            src="/src/assets/images/flexiLearn.png"
+                            width={200}
+                            height={200}
+                            alt="FlexiLearn Logo"
+                        />
+                    </Link>
+                    <p className="py-6 mx-2 text-xl font-semibold text-gray-700">
+                        Parent Profile Details
+                    </p>
                 </div>
-            )}
+
+                <Form {...form}>
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="my-4 w-[20rem] space-y-6 pb-20 sm:w-[30rem] md:w-[50rem]"
+                    >
+                        <div className="flex flex-col items-center justify-center gap-4 p-4 border border-gray-300 rounded-md shadow-md">
+                            <label
+                                htmlFor="uploadInput"
+                                className="text-lg font-semibold text-gray-700"
+                            >
+                                Upload Profile Image
+                            </label>
+                            <Input
+                                type="file"
+                                id="uploadInput"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="hidden"
+                            />
+                            <div
+                                className={`flex h-48 w-48 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-gray-300 ${image ? "border-transparent" : "hover:border-red-500"
+                                    }`}
+                                onClick={handleClick}
+                            >
+                                {image ? (
+                                    <img
+                                        src={image}
+                                        alt="Uploaded"
+                                        className="object-cover w-48 h-48 rounded-full"
+                                    />
+                                ) : (
+                                    <div className="text-center">
+                                        <Avatar className="h-44 w-44">
+                                            <AvatarImage src="/src/assets/images/teacher.jpg" />
+                                            <AvatarFallback>PF</AvatarFallback>
+                                        </Avatar>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <FormField
+                            control={form.control}
+                            name="fullName"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Full Name
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder={`Enter your full name`}
+                                            {...field}
+                                            className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="phoneNo"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Phone No
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder={`Enter your phone number`}
+                                            {...field}
+                                            className="w-full py-6 my-2 border border-gray-300 rounded-md focus:border-gray-500 focus:outline-none"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            name="language"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Language
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            value={field.value}
+                                        >
+                                            <SelectTrigger className="w-[16rem]">
+                                                <SelectValue placeholder="Select language" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Language</SelectLabel>
+                                                    <SelectItem value="English">English</SelectItem>
+                                                    <SelectItem value="Urdu">Urdu</SelectItem>
+                                                    <SelectItem value="Arabic">Arabic</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            name="gender"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg font-semibold text-gray-700">
+                                        Gender
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            value={field.value}
+                                        >
+                                            <SelectTrigger className="w-[16rem]">
+                                                <SelectValue placeholder="Select language" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Gender</SelectLabel>
+                                                    <SelectItem value="Male">Male</SelectItem>
+                                                    <SelectItem value="Female">Female</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <div className="flex items-center justify-center mt-10">
+                            <Button
+                                type="submit"
+                                className="px-16 py-6 text-white bg-red-500 rounded-md text-md hover:bg-red-600"
+                            >
+                                Submit
+                            </Button>
+                        </div>
+                    </form>
+                </Form>
+            </div>
         </>
     );
 };

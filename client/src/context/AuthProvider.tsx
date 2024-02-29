@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useState, FunctionComponent } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import { SERVER_URL } from "@/config/config";
 
 interface AuthContextType {
   auth: any | null; // Replace `any` with your actual auth state type
@@ -19,11 +20,12 @@ export const AuthProvider: FunctionComponent<AuthProviderProps> = ({
   children,
 }) => {
   const [auth, setAuth] = useState<AuthContextType["auth"]>(null);
+
   useEffect(() => {
     const validateSession = async () => {
       try {
         axios
-          .get(`${import.meta.env.SERVER_URL}/auth/validate-session`, {
+          .get(`${SERVER_URL}/auth/validate-session`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
@@ -55,7 +57,7 @@ export const AuthProvider: FunctionComponent<AuthProviderProps> = ({
         // passing refresh token to the backend to get new access token in the header of axios
 
         const response = await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL}/auth/refresh`,
+          `${SERVER_URL}/auth/refresh`,
           {},
           {
             headers: {
@@ -63,9 +65,12 @@ export const AuthProvider: FunctionComponent<AuthProviderProps> = ({
             },
           }
         );
-        localStorage.setItem("accessToken", response.data.backendTokens.accessToken);
-        localStorage.setItem("refreshToken", response.data.backendTokens.refreshToken);
-        localStorage.setItem("expiresIn", response.data.backendTokens.expiresIn);
+
+        console.log('response', response);
+
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
+        localStorage.setItem("expiresIn", response.data.expiresIn);
       } catch (error) {
         console.error("Error refreshing token:", error);
       }
@@ -81,7 +86,6 @@ export const AuthProvider: FunctionComponent<AuthProviderProps> = ({
       }
       validateSession();
     };
-
 
 
     validateAndRefresh();

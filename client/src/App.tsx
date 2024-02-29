@@ -7,16 +7,12 @@ import { teacherRoutes } from "@/routes/teacher-routes";
 import PublicRoute from "@/routes/public-route";
 import ProtectedRoute from "@/routes/protect-route";
 import { parentRoutes } from "./routes/parent-routes";
-import HomeSchooling from "./pages/HomeSchooling/HomeSchooling";
 
 function App() {
   return (
-      
     <Routes>
-
       <Route path="/" element={<Layout />}>
         <Route path="/home" element={<Home />} />
-        <Route path="/location" element={<HomeSchooling />} />
 
         {/* Auth Routes */}
         <Route element={<PublicRoute />}>{authRoutes}</Route>

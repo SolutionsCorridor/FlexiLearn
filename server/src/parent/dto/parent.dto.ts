@@ -6,9 +6,33 @@ export class CreateParentDto {
 
     @IsString()
     readonly fullName: string;
+
+    @IsString()
+    phoneNo?: string;
+
+    @IsString()
+    language?: string;
+
+    @IsString()
+    gender?: string;
+
+    @IsString()
+    profileImage?: string;
 }
 
 export class UpdateParentDto {
     @IsString()
     readonly fullName?: string;
+
+    @IsString()
+    phoneNo?: string;
+
+    @IsString()
+    language?: string;
+
+    @IsString()
+    gender?: string;
+
+    @IsString()
+    profileImage?: string;
 }

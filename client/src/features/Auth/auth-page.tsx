@@ -17,7 +17,7 @@ export default function AuthenticationPage({
 }) {
   return (
     <>
-      <div className="container relative  grid h-[750px] flex-col items-center justify-center xl:max-w-none xl:grid-cols-2 xl:px-0 ">
+      <div className="container relative grid h-[750px] flex-col items-center justify-center xl:max-w-none xl:grid-cols-2 xl:px-0 ">
         <div className=" flex items-center justify-center xl:hidden">
           <Link to="/">
             <img

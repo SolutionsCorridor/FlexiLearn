@@ -6,7 +6,7 @@ const PublicRoute = () => {
 
   // If the user is already authenticated, redirect to the home page
   if (isAuth === "true") {
-    return <Navigate to={`/`} />;
+    return <Navigate to={`/home`} />;
   } else {
     return <Outlet />;
   }
