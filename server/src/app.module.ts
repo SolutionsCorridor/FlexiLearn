@@ -9,6 +9,8 @@ import { ParentModule } from './parent/parent.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { StudentModule } from './student/student.module';
 import { S3ClientModule } from './s3-client/s3-client.module';
+import { QuizModule } from './quiz/quiz.module';
+
 
 
 @Module({
@@ -26,6 +28,7 @@ import { S3ClientModule } from './s3-client/s3-client.module';
     StudentModule,
     ParentModule,
     S3ClientModule,
+    QuizModule,
   ],
   controllers: [AppController],
   providers: [AppService,],
