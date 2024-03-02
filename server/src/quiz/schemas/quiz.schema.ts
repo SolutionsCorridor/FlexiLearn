@@ -13,12 +13,8 @@ export class Quiz extends Document {
     @Prop()
     numberOfQuestions: number;
 
-    @Prop([{ question: String, options: [String], correct_answer: Number }])
-    questions: Array<{
-        question: string;
-        options: string[];
-        correct_answer: number;
-    }>;
+    @Prop()
+    questions: Array<any>;
 }
 
 export const QuizSchema = SchemaFactory.createForClass(Quiz);

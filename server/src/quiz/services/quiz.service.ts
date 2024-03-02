@@ -43,7 +43,13 @@ export class QuizService {
             const mcqs = JSON.parse(res);
 
 
-            return mcqs;
+            const createdQuiz = await this.quizModel.create({
+                topic: subject,
+                numberOfQuestions: numberOfMCQs,
+                questions: mcqs.questions,
+            });
+
+            return createdQuiz;
 
 
 
