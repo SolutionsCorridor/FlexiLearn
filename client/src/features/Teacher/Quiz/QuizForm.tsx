@@ -42,7 +42,8 @@ const MCQ: React.FC<MCQProps> = ({ question, options, selectedAnswer, onAnswer, 
     </div>
   );
 
-
+// QuizPage component
+// QuizPage component
 const QuizPage: React.FC = () => {
     const [questions, setQuestions] = useState<Question[]>([]);
     const [answers, setAnswers] = useState<{ [key: number]: string }>({});
@@ -85,49 +86,39 @@ const QuizPage: React.FC = () => {
       return () => clearTimeout(timer);
     }, [timeLeft, isSubmitted]);
   
-    // ...
+    const handleAnswer = (questionIndex: number, option: string) => {
+        if (!isSubmitted && timeLeft > 0) {
+          setAnswers((prev) => ({ ...prev, [questionIndex]: option }));
+        }
+      };
+  
+    const handleSubmit = () => {
+  if (!isSubmitted && timeLeft > 0) {
+    setIsSubmitted(true);
 
-// Update the handleAnswer function
-const handleAnswer = (questionIndex: number, option: string) => {
-    if (!isSubmitted && timeLeft > 0) {
-      setAnswers((prev) => ({ ...prev, [questionIndex]: option }));
-    }
-  };
-  
-  // ...
-  
-  // Modify the handleSubmit function
-  const handleSubmit = () => {
-    if (!isSubmitted && timeLeft > 0) {
-      setIsSubmitted(true);
-  
-      // Extract correct answers into an array of single letters
-      const correctAnswers = questions.map((question) => question.correct_answer);
+    // Log answers and correct answers for debugging
+    console.log('Answers:', answers);
+    console.log('Correct Answers:', questions.map((q) => q.correct_answer));
 
-      console.log(answers);
-      console.log()
-  
-      // Calculate score
-      const correctCount = questions.reduce((count, question, index) => {
-        // Compare the first letter of the selected answer with the correct answer
-        const correctOption = correctAnswers[index];
-        return answers[index][0].toLowerCase() === correctOption.toLowerCase() ? count + 1 : count;
-      }, 0);
-  
-      const scorePercentage = (correctCount / questions.length) * 100;
-  
-      // Display score in an alert
-      alert(`Your score: ${scorePercentage.toFixed(2)}%`);
-  
-      // Redirect if score is more than 80%
-      if (scorePercentage > 80) {
-        navigate('/teacher/meeting');
-      }
+    // Calculate score
+    const correctCount = questions.reduce((count, question, index) => {
+      // Compare the stored answer with the correct answer
+      const correctOption = question.correct_answer;
+      return answers[index] === correctOption ? count + 1 : count;
+    }, 0);
+
+    const scorePercentage = (correctCount / questions.length) * 100;
+
+    // Display score in an alert
+    alert(`Your score: ${scorePercentage.toFixed(2)}%`);
+
+    // Redirect if score is more than 80%
+    if (scorePercentage > 80) {
+      navigate('/teacher/meeting');
     }
-  };
-  
-  // ...
-  
+  }
+};
+
       
       
   
