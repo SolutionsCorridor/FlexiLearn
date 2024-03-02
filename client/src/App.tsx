@@ -9,6 +9,7 @@ import ProtectedRoute from "@/routes/protect-route";
 import { parentRoutes } from "./routes/parent-routes";
 import HomeSchooling from "./pages/HomeSchooling/HomeSchooling";
 import TeacherProfileForStudent from "./pages/Profiles/TeacherProfileForStudent";
+import Assessment from "./pages/Teacher/Assessment/Assessment";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route path="/location" element={<HomeSchooling />} />
         <Route path="/teacher/profile/:id" element={<TeacherProfileForStudent />} />
+        <Route path="/teacher/assessment/" element={<Assessment />} />
         <Route path="/home" element={<Home />} />
 
         {/* Auth Routes */}
