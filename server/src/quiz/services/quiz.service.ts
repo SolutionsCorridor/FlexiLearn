@@ -49,13 +49,24 @@ export class QuizService {
                 questions: mcqs.questions,
             });
 
-            return createdQuiz;
+            return {quizId: createdQuiz._id};
 
 
 
 
         } catch (error) {
             console.error('Error:', error);
+        }
+    }
+
+
+    async getQuiz(quizId: string): Promise<any> {
+        try {
+            const quiz = await this.quizModel.findById(quizId);
+            return quiz.questions;
+        }
+        catch{
+            console.log("Error occured fetching quiz");
         }
     }
 }

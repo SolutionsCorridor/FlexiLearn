@@ -10,6 +10,7 @@ import { parentRoutes } from "./routes/parent-routes";
 import HomeSchooling from "./pages/HomeSchooling/HomeSchooling";
 import TeacherProfileForStudent from "./pages/Profiles/TeacherProfileForStudent";
 import Assessment from "./pages/Teacher/Assessment/Assessment";
+import Quiz from "./pages/Teacher/Assessment/Quiz";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/location" element={<HomeSchooling />} />
         <Route path="/teacher/profile/:id" element={<TeacherProfileForStudent />} />
         <Route path="/teacher/assessment/" element={<Assessment />} />
+        <Route path="/teacher/assessment/quiz/:quizId" element={<Quiz />} />
         <Route path="/home" element={<Home />} />
 
         {/* Auth Routes */}

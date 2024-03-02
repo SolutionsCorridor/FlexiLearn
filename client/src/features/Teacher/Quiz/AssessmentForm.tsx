@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 // import { BookOpen, CopyCheck } from "lucide-react";
 // import { Separator } from "../ui/separator";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 // import { useToast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom"
 import {
@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/card";
 import LoadingQuestions from "./LoadingQuestions";
 import {teacherAssessmentCreationSchema} from "@/constants/teacher-assessment"
+import { SERVER_URL } from "@/config/config"
 
 interface AssessmentProps {
   topic: string;
@@ -63,27 +64,27 @@ const AssessmentForm: React.FC<AssessmentProps> = ({ topic }) => {
     console.log(data)
 
     // Simulate an API call
-    // axios
-    //   .post(`${process.env.NEXT_PUBLIC_SERVER_URL}/quiz`, {
-    //     numberOfMCQs: data.amount,
-    //     subject: data.topic,
-    //   })
-    //   .then((response) => {
-    //     const quizId = response.data.questions.quizId;
-    //     console.log(quizId);
-    //     navigate(`/teacher/assessment/quiz?quizId=${quizId}`);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error:", error);
-    //     // toast({
-    //     //   title: "Error",
-    //     //   description: "Something went wrong. Please try again later.",
-    //     //   variant: "destructive",
-    //     // });
-    //   })
-    //   .finally(() => {
-    //     setShowLoader(false);
-    //   });
+    axios
+      .post(`${SERVER_URL}/quiz/create`, {
+        amount: data.amount,
+        subject: data.topic,
+      })
+      .then((response) => {
+        const quizId = response.data.quizId;
+        console.log(quizId);
+        navigate(`/teacher/assessment/quiz/${quizId}`);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        // toast({
+        //   title: "Error",
+        //   description: "Something went wrong. Please try again later.",
+        //   variant: "destructive",
+        // });
+      })
+      .finally(() => {
+        setShowLoader(false);
+      });
   };
 
   if (showLoader) {

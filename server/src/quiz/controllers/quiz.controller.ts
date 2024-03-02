@@ -9,4 +9,9 @@ export class QuizController {
     async createQuiz(@Body('subject') subject: string, @Body('amount') numberOfMCQs: number): Promise<any> {
       return await this.quizService.createQuiz(subject, numberOfMCQs);
     }
+
+    @Get('get/:quizId')
+    async getQuiz(@Param('quizId') quizId: string): Promise<any>{
+      return await this.quizService.getQuiz(quizId);
+    }
 }
