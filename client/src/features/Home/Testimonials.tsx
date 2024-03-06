@@ -14,39 +14,39 @@ interface DataType {
 
 const postData: DataType[] = [
     {
-        name: "Robert Fox",
-        profession: 'CEO, Parkview Int.Ltd',
-        comment: 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour',
-        imgSrc: '/src/assets/images/testimonial/user.svg',
-    },
-    {
-        name: "Leslie Alexander",
-        profession: 'CEO, Parkview Int.Ltd',
-        comment: 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour',
-        imgSrc: '/src/assets/images/mentor/user2.png',
-    },
-    {
-        name: "Cody Fisher",
-        profession: 'CEO, Parkview Int.Ltd',
-        comment: 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour',
-        imgSrc: '/src/assets/images/mentor/user3.png',
-    },
-    {
-        name: "Robert Fox",
-        profession: 'CEO, Parkview Int.Ltd',
-        comment: 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour',
+        name: "Muhammad Waleed Atif",
+        profession: 'A-Level Mathematics Student',
+        comment: 'I have been studying with Mr. Fraz for the past 6 months and I have seen a significant improvement in my grades. He is a great teacher and I would recommend him to anyone who is struggling with Mathematics.',
         imgSrc: '/src/assets/images/mentor/user1.png',
     },
     {
-        name: "Leslie Alexander",
-        profession: 'CEO, Parkview Int.Ltd',
-        comment: 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour',
-        imgSrc: '/src/assets/images/mentor/user2.png',
+        name: "Hassan Ali",
+        profession: 'O-Level Physics Student',
+        comment: 'I have been studying with Mr. Abdullah for the past 6 months and I have seen a significant improvement in my grades. He is a great teacher and I would recommend him to anyone who is struggling with Physics.',
+        imgSrc: '/src/assets/images/mentor/user3.png',
+    },
+    {
+        name: "Rafay Khan",
+        profession: 'Arabic Language Student',
+        comment: 'I have been studying with Mr. Usmani for the past 6 months and I have seen a significant improvement in my grades. He is a great teacher and I would recommend him to anyone who is struggling with Arabic.',
+        imgSrc: '/src/assets/images/mentor/user1.png',
+    },
+    {
+        name: "Waleed Abdullah",
+        profession: 'A-Level Mathematics Student',
+        comment: 'I have been studying with Mr. Fraz for the past 6 months and I have seen a significant improvement in my grades. He is a great teacher and I would recommend him to anyone who is struggling with Mathematics.',
+        imgSrc: '/src/assets/images/mentor/user3.png',
     },
     {
         name: "Cody Fisher",
-        profession: 'CEO, Parkview Int.Ltd',
-        comment: 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour',
+        profession: 'Matric Physics Student',
+        comment: 'I have been studying with Mr. Abdullah for the past 6 months and I have seen a significant improvement in my grades. He is a great teacher and I would recommend him to anyone who is struggling with Physics.',
+        imgSrc: '/src/assets/images/mentor/user1.png',
+    },
+    {
+        name: "Umut Kaya",
+        profession: 'Arabic Language Student',
+        comment: 'I have been studying with Mr. Usmani for the past 6 months and I have seen a significant improvement in my grades. He is a great teacher and I would recommend him to anyone who is struggling with Arabic',
         imgSrc: '/src/assets/images/mentor/user3.png',
     },
 ]

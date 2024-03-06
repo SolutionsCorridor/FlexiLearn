@@ -13,7 +13,6 @@ export const auth = async (
 };
 
 export const login = async (email: string, password: string) => {
-    console.log("Logging user", email, password);
 
     try {
         const response = await axios.post(

@@ -16,7 +16,47 @@ export const Subjects = [
   {
     id: 4,
     name: 'History',
-  }
+  },
+  {
+    id: 5,
+    name: 'Geography',
+  },
+  {
+    id: 6,
+    name: 'Physics',
+  },
+  {
+    id: 7,
+    name: 'Chemistry',
+  },
+  {
+    id: 8,
+    name: 'Biology',
+  },
+  {
+    id: 9,
+    name: 'Computer Science',
+  },
+  {
+    id: 10,
+    name: 'Islamic Studies',
+  },
+  {
+    id: 11,
+    name: 'Economics',
+  },
+  {
+    id: 12,
+    name: 'Urdu',
+  },
+  {
+    id: 13,
+    name: 'Arabic',
+  },
+  {
+    id: 14,
+    name: 'Punjabi',
+  },
 ];
 
 export const teachers: Teacher[] = [

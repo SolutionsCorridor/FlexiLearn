@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import {Button} from '@/components/ui/button'; // Make sure you import Button from the correct path
 import { SERVER_URL } from '@/config/config';
+import { Toaster} from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 // Types for question and options
 type Question = {
@@ -58,15 +60,15 @@ const QuizPage: React.FC = () => {
   
         try {
             const response = await axios.get(`${SERVER_URL}/quiz/get/${quizId}`);
-      
+            console.log(response.data)
             const data = response.data;
             if (data) {
               const parsedData = data.map((question: any) => ({
                 ...question,
-                correct_answer: question.correct_answer.toLowerCase(), // Convert correct answer to lowercase
+                correct_answer: question.correct_option.toLowerCase(), // Convert correct answer to lowercase
               }));
-      
               setQuestions(parsedData);
+              console.log(parsedData)
               setTimeLeft(parsedData.length * 90);
             }
         } catch (error) {
@@ -92,32 +94,48 @@ const QuizPage: React.FC = () => {
         }
       };
   
-    const handleSubmit = () => {
-  if (!isSubmitted && timeLeft > 0) {
-    setIsSubmitted(true);
-
-    // Log answers and correct answers for debugging
-    console.log('Answers:', answers);
-    console.log('Correct Answers:', questions.map((q) => q.correct_answer));
-
-    // Calculate score
-    const correctCount = questions.reduce((count, question, index) => {
-      // Compare the stored answer with the correct answer
-      const correctOption = question.correct_answer;
-      return answers[index] === correctOption ? count + 1 : count;
-    }, 0);
-
-    const scorePercentage = (correctCount / questions.length) * 100;
-
-    // Display score in an alert
-    alert(`Your score: ${scorePercentage.toFixed(2)}%`);
-
-    // Redirect if score is more than 80%
-    if (scorePercentage > 80) {
-      navigate('/teacher/meeting');
-    }
-  }
-};
+      const handleSubmit = () => {
+        if (!isSubmitted && timeLeft > 0) {
+          setIsSubmitted(true);
+      
+          // Calculate score
+          const correctCount = questions.reduce((count, question, index) => {
+            const userAnswerFullText = answers[index]; // Full answer text selected by the user
+            let userAnswerLetter = ''; // To store the letter corresponding to the user's answer
+      
+            // Iterate over the question's options to find the letter corresponding to the user's full text answer
+            Object.entries(question.options).forEach(([key, value]) => {
+              if (value === userAnswerFullText) {
+                userAnswerLetter = key;
+              }
+            });
+      
+            // Check if the user's answer (by letter) matches the correct answer
+            console.log(question.correct_answer, userAnswerLetter)
+            const isCorrect = userAnswerLetter === question.correct_answer;
+            return isCorrect ? count + 1 : count;
+          }, 0);
+      
+          const scorePercentage = (correctCount / questions.length) * 100;
+      
+          // Display score in an alert
+          if(scorePercentage < 80){
+            toast.error(`Your score: ${scorePercentage.toFixed(2)}%`);
+            setTimeout(() => {
+              toast("You need to score more than 80% to move to the next stage")
+            }, 2000);
+          }
+      
+          // Redirect if score is more than 80%
+          if (scorePercentage > 80) {
+            toast.success(`Your score: ${scorePercentage.toFixed(2)}%`);
+            setTimeout(() => {
+              navigate('/teacher/meeting');
+            }, 2000);
+          }
+        }
+      };
+      
 
       
       
@@ -125,7 +143,13 @@ const QuizPage: React.FC = () => {
     return (
       <div>
         <div>
-          <p>Time left: {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}</p>
+          <Toaster/>
+          <p className="text-xl font-bold mb-5">
+            Time left:
+             <span className='text-2xl text-gray-500'>
+              {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}
+              </span>
+            </p>
           {Array.isArray(questions) &&
             questions.map((question, index) => (
               <MCQ

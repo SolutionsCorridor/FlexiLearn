@@ -4,7 +4,7 @@ import { fetchTeacher } from '@/services/teacher/profile.service';
 // import Image from 'react-image';
 // import { AcademicCapIcon, DocumentCheckIcon, StarIcon } from 'react-heroicons';
 import { Teacher } from '@/constants/types';
-import { UsersIcon } from 'lucide-react';
+import { UsersIcon,StarIcon,CheckIcon } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Loader from '@/components/shared/Loader';
 
@@ -51,20 +51,20 @@ const TeacherProfileForStudent = () => {
         </div>
       )}
 
-      <div className="absolute top-4 right-4 bg-green-600 text-white p-4 rounded-full">
+      <div className="absolute top-4 right-4 bg-red-500 text-white py-3 px-8 rounded-full text-lg">
         ${teacherData?.hourlyRate}/hr
       </div>
 
       <div className="bg-primary text-white flex justify-center flex-col max-w-6xl m-auto p-20 py-8 gap-8 rounded-3xl">
-        {/* <div>
-          <Image
+        <div>
+          <img
             src={teacherData?.profileImg}
-            width={200}
-            height={200}
+            width={80}
+            height={80}
             alt="teacher profile"
-            className='flex flex-col items-center justify-center gap-4 rounded-full p-4'
+            className='flex flex-col items-center justify-center gap-2 rounded-full p-2'
           />
-        </div> */}
+        </div>
         <div className='flex flex-col gap-1'>
             <h2 className='text-3xl font-bold'>
                 {teacherData?.fullName ?? ''}
@@ -78,15 +78,19 @@ const TeacherProfileForStudent = () => {
         </div>
         <div className='flex flex-row flex-wrap gap-8'>
           <div className='flex flex-row flex-wrap gap-2'>
-            {/* <StarIcon className='text-yellow-400 h-6 w-6' /> */}
+            <StarIcon className='text-yellow-400 h-6 w-6' />
             <div>
               {teacherData?.rating}
             </div>
           </div>
-          <div className='flex flex-row flex-wrap gap-2'>
-            {/* <DocumentCheckIcon className='text-green-400 h-6 w-6' /> */}
+          <div className='flex flex-row flex-wrap gap-1'>
+            <CheckIcon className='text-green-400 h-6 w-6' />
             <div>
-              {teacherData?.totalReviews} Reviews
+              <span className='text-slate-400'>
+              Total Reviews: 
+              </span>
+              {" "}
+              {teacherData?.totalReviews}
             </div>
           </div>
           <div className='flex flex-row flex-wrap gap-2'>
@@ -98,7 +102,7 @@ const TeacherProfileForStudent = () => {
         </div>
         <div className=''>
           <button
-            className='bg-green-600 p-6 rounded-2xl'
+            className='bg-green-600 p-6 rounded-2xl text-lg'
             onClick={goToBookAppointment}
           >
             Book an Appointment

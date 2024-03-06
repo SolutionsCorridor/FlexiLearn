@@ -17,8 +17,7 @@ interface NavigationItem {
 const navigation: NavigationItem[] = [
   { name: "Home", href: "/", current: true },
   { name: "Courses", href: "#courses", current: false },
-  { name: "Mentor", href: "#mentor", current: false },
-  { name: "Group", href: "/#group", current: false },
+  { name: "Teachers", href: "#mentor", current: false },
   { name: "Testimonial", href: "#testimonial", current: false },
 ];
 
@@ -65,11 +64,13 @@ const Nav = () => {
               {/* LOGO */}
 
               <div className="flex items-center flex-shrink-0">
+                <Link to={'/'}>
                 <img
                   className="block w-40 h-20"
                   src={"src/assets/images/flexiLearn.png"}
                   alt="dsign-logo"
                 />
+                </Link>
 
               </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,10 +22,9 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-// import { BookOpen, CopyCheck } from "lucide-react";
-// import { Separator } from "../ui/separator";
+import { Toaster } from "react-hot-toast";
 import axios from "axios";
-// import { useToast } from "../ui/use-toast";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom"
 import {
   Card,
@@ -39,15 +38,33 @@ import {teacherAssessmentCreationSchema} from "@/constants/teacher-assessment"
 import { SERVER_URL } from "@/config/config"
 
 interface AssessmentProps {
-  topic: string;
+  topic?: string;
 }
 
 type Input = z.infer<typeof teacherAssessmentCreationSchema>;
 
-const AssessmentForm: React.FC<AssessmentProps> = ({ topic }) => {
+const AssessmentForm: React.FC<AssessmentProps> = () => {
   const navigate = useNavigate();
   const [showLoader, setShowLoader] = useState(false);
-//   const { toast } = useToast();
+  const [topic,setTopic] = useState('');
+
+  // sending call to /teacher/userId (userId from local storage) to get the subject of the teacher in the input
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      axios
+        .get(`${SERVER_URL}/teacher/${userId}`)
+        .then((response) => {
+          console.log(response.data);
+          form.setValue("topic", response.data.subject);
+          setTopic(response.data.subject);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  }
+  ,[]);
 
   const form = useForm<Input>({
     resolver: zodResolver(teacherAssessmentCreationSchema),
@@ -67,7 +84,7 @@ const AssessmentForm: React.FC<AssessmentProps> = ({ topic }) => {
     axios
       .post(`${SERVER_URL}/quiz/create`, {
         amount: data.amount,
-        subject: data.topic,
+        subject: topic,
       })
       .then((response) => {
         const quizId = response.data.quizId;
@@ -76,11 +93,7 @@ const AssessmentForm: React.FC<AssessmentProps> = ({ topic }) => {
       })
       .catch((error) => {
         console.error("Error:", error);
-        // toast({
-        //   title: "Error",
-        //   description: "Something went wrong. Please try again later.",
-        //   variant: "destructive",
-        // });
+        toast.error("Something went wrong. Please try again later.");
       })
       .finally(() => {
         setShowLoader(false);
@@ -92,6 +105,8 @@ const AssessmentForm: React.FC<AssessmentProps> = ({ topic }) => {
   }
 
   return (
+    <>
+    <Toaster/>
     <Card>
       <CardHeader>
         <CardTitle className="text-2xl font-bold">
@@ -105,6 +120,7 @@ const AssessmentForm: React.FC<AssessmentProps> = ({ topic }) => {
             <FormField
               control={form.control}
               name="topic"
+              disabled
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Topic</FormLabel>
@@ -157,6 +173,7 @@ const AssessmentForm: React.FC<AssessmentProps> = ({ topic }) => {
         </Form>
       </CardContent>
     </Card>
+    </>
   );
 };
 

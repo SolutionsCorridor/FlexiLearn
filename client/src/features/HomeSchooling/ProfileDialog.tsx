@@ -43,9 +43,12 @@ const ProfileDialog: React.FC<ProfileDialogProps> = ({ teacher, onClose }) => {
   const handleClose = () => {
     setIsOpen(false);
     onClose();
-    navigate("/teacher/profile/" + teacher.userId)
   };
-
+  const handleRedirect = () => {
+    setIsOpen(false);
+    onClose();
+    navigate("/teacher/profile/" + teacher.userId);
+  }
   return (
     <>
       {isOpen && (
@@ -90,7 +93,7 @@ const ProfileDialog: React.FC<ProfileDialogProps> = ({ teacher, onClose }) => {
             <div className="flex items-center justify-center">
               <button
                 className="mt-4 rounded bg-red-500 px-4 py-2 text-white"
-                onClick={handleClose}
+                onClick={handleRedirect}
               >
                 View More
               </button>
