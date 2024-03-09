@@ -1,6 +1,6 @@
 import  { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchTeacher } from '@/services/teacher/profile.service';
+import { getTeacher } from '@/services/teacher/profile.service';
 // import Image from 'react-image';
 // import { AcademicCapIcon, DocumentCheckIcon, StarIcon } from 'react-heroicons';
 import { Teacher } from '@/constants/types';
@@ -20,7 +20,7 @@ const TeacherProfileForStudent = () => {
     if (id) {
       console.log(id)
       setLoading(true);
-      fetchTeacher(id)
+      getTeacher(id)
         .then((res) => {
           setTeacherData(res);
           console.log(res);

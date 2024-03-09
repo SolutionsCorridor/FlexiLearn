@@ -7,7 +7,7 @@ import { Teacher } from "@/constants/types";
 import TeacherFilter from "./TeacherFilter";
 import { useJsApiLoader } from "@react-google-maps/api";
 import Loader from "../../components/shared/Loader";
-import { getTeacher } from "@/services/teacher/profile.service";
+import { getTeachers } from "@/services/teacher/profile.service";
 
 const MapContainer = () => {
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
@@ -22,7 +22,7 @@ const MapContainer = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const teachersFromApi = await getTeacher();
+      const teachersFromApi = await getTeachers();
       setTeachers(teachersFromApi);
     };
 
