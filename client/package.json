@@ -33,6 +33,7 @@
     "body-parser": "^1.20.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "date-fns": "^3.3.1",
     "eslint": "8.47.0",
     "flowbite": "^1.8.1",
     "flowbite-react": "^0.5.0",
@@ -44,6 +45,8 @@
     "lucide-react": "^0.268.0",
     "postcss": "8.4.28",
     "react": "^18.2.0",
+    "react-calendly": "^4.3.0",
+    "react-day-picker": "^8.10.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.1",
     "react-hot-toast": "^2.4.1",
@@ -58,6 +61,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/haversine": "^1.1.8",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.10.5",
     "@types/react": "^18.2.43",

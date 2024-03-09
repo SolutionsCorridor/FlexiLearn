@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTeacherDto, UpdateTeacherDto } from '../dto/teacher.dto';
+import { CreateTeacherDto, TeacherMeetingDto, UpdateTeacherDto } from '../dto/teacher.dto';
 import { DeleteObjectCommand, ListObjectsV2Command, PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -153,6 +153,18 @@ export class TeacherService {
         } catch (error) {
             console.log('Error in updating teacher profile:', error);
         }
+    }
+
+    async setMeeting(teacherId: string, data: TeacherMeetingDto) {
+        const updatedTeacherProfile = await this.teacher.findOneAndUpdate(
+            { userId: teacherId },
+            {
+                meetingDate: data.meetingDate,
+                meetingTime: data.meetingTime,
+            },
+            { new: true }
+        );
+        return updatedTeacherProfile;
     }
 
     async deleteTeacher(teacherId: string) {

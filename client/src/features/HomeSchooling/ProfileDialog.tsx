@@ -1,5 +1,3 @@
-"use client"
-
 import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from "react";
 import CrossIcon from "@/components/ui/cross-icon";
@@ -66,7 +64,7 @@ const ProfileDialog: React.FC<ProfileDialogProps> = ({ teacher, onClose }) => {
             {/* Profile Picture */}
             <div className="flex space-x-4">
               <img
-                src={teacher.profileImg}
+                src={teacher.profileImage}
                 alt={`${teacher.fullName}'s Profile`}
                 className={cn(
                   teacher.gender === "Male" ? "h-24 w-24" : "h-24 w-24",

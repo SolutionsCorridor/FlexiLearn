@@ -7,7 +7,7 @@ export interface Teacher {
   longitude: number;
   latitude: number;
   gender: string;
-  profileImg: string;
+  profileImage: string;
   hourlyRate: number;
   rating: number;
   totalClasses: number;

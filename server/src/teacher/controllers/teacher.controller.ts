@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { TeacherService } from '../services/teacher.service';
-import { CreateTeacherDto, UpdateTeacherDto } from '../dto/teacher.dto';
+import { CreateTeacherDto, TeacherMeetingDto, UpdateTeacherDto } from '../dto/teacher.dto';
 
 @Controller('teacher')
 export class TeacherController {
@@ -24,6 +24,11 @@ export class TeacherController {
     @Put(':teacherId')
     update(@Param('teacherId') teacherId: string, @Body() updateTeacherDto: UpdateTeacherDto) {
         return this.teacherService.updateTeacher(teacherId, updateTeacherDto);
+    }
+
+    @Put('meeting/:teacherId')
+    updateMeeting(@Param('teacherId') teacherId: string, @Body() teacherMeetingDto: TeacherMeetingDto) {
+        return this.teacherService.setMeeting(teacherId, teacherMeetingDto);
     }
 
     @Delete(':teacherId')

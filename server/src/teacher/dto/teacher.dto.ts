@@ -47,7 +47,6 @@ export class CreateTeacherDto {
     cv?: string;
 }
 export class UpdateTeacherDto {
-
     @IsString()
     readonly fullName?: string;
 
@@ -89,4 +88,12 @@ export class UpdateTeacherDto {
 
     @IsString()
     cv?: string;
+}
+
+export class TeacherMeetingDto {
+    @IsString()
+    readonly meetingDate: string;
+
+    @IsString()
+    readonly meetingTime: string;
 }

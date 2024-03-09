@@ -67,6 +67,12 @@ export class Teacher extends Document {
 
     @Prop({ default: "" })
     cv: string;
+
+    @Prop({ default: "" })
+    meetingDate: string;
+
+    @Prop({ default: "" })
+    meetingTime: string;
 }
 
 export const TeacherSchema = SchemaFactory.createForClass(Teacher);

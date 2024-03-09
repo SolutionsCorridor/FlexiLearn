@@ -58,7 +58,7 @@ const TeacherProfileForStudent = () => {
       <div className="bg-primary text-white flex justify-center flex-col max-w-6xl m-auto p-20 py-8 gap-8 rounded-3xl">
         <div>
           <img
-            src={teacherData?.profileImg}
+            src={teacherData?.profileImage}
             width={80}
             height={80}
             alt="teacher profile"

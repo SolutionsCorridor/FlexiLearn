@@ -75,7 +75,7 @@ export const teachers: Teacher[] = [
     totalReviews: 20,
     subject: "English",
     gender: "Female",
-    profileImg: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
+    profileImage: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
   },
   {
     userId: 2,
@@ -91,7 +91,7 @@ export const teachers: Teacher[] = [
     totalReviews: 25,
     subject: "Maths",
     gender: "Male",
-    profileImg: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
+    profileImage: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
   },
   {
     userId: 3,
@@ -107,7 +107,7 @@ export const teachers: Teacher[] = [
     totalReviews: 18,
     subject: "Urdu",
     gender: "Female",
-    profileImg: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
+    profileImage: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
   },
   {
     userId: 4,
@@ -123,7 +123,7 @@ export const teachers: Teacher[] = [
     totalReviews: 15,
     subject: "Physics",
     gender: "Male",
-    profileImg: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
+    profileImage: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
   },
   {
     userId: 5,
@@ -139,7 +139,7 @@ export const teachers: Teacher[] = [
     totalReviews: 22,
     subject: "Islamic Studies",
     gender: "Female",
-    profileImg: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg"
+    profileImage: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg"
   },
 
   // Teachers from other cities
@@ -157,7 +157,7 @@ export const teachers: Teacher[] = [
     totalReviews: 25,
     subject: "Punjabi",
     gender: "Male",
-    profileImg: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
+    profileImage: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
   },
   {
     userId: 7,
@@ -173,7 +173,7 @@ export const teachers: Teacher[] = [
     totalReviews: 28,
     subject: "Chemistry",
     gender: "Female",
-    profileImg: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
+    profileImage: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
   },
   {
     userId: 8,
@@ -189,7 +189,7 @@ export const teachers: Teacher[] = [
     totalReviews: 20,
     subject: "Computer Science",
     gender: "Male",
-    profileImg: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
+    profileImage: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
   },
   {
     userId: 9,
@@ -205,7 +205,7 @@ export const teachers: Teacher[] = [
     totalReviews: 18,
     subject: "Arabic",
     gender: "Female",
-    profileImg: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
+    profileImage: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
   },
   {
     userId: 10,
@@ -221,7 +221,7 @@ export const teachers: Teacher[] = [
     totalReviews: 16,
     subject: "Maths",
     gender: "Male",
-    profileImg: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
+    profileImage: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
   },
 ]
 
@@ -241,7 +241,7 @@ export const teachers: Teacher[] = [
 //     totalReviews: 25,
 //     subject: "Maths",
 //     gender: "Male",
-//     profileImg: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
+//     profileImage: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
 //   },
 //   {
 //     userId: ObjectId('65e067a5e93f33d690eedbab'),
@@ -257,7 +257,7 @@ export const teachers: Teacher[] = [
 //     totalReviews: 18,
 //     subject: "Urdu",
 //     gender: "Female",
-//     profileImg: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
+//     profileImage: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
 //   },
 //   {
 //     userId: ObjectId('65e067b2e93f33d690eedbae'),
@@ -273,7 +273,7 @@ export const teachers: Teacher[] = [
 //     totalReviews: 15,
 //     subject: "Physics",
 //     gender: "Male",
-//     profileImg: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
+//     profileImage: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
 //   },
 //   {
 //     userId: ObjectId('65e067c2e93f33d690eedbb1'),
@@ -289,7 +289,7 @@ export const teachers: Teacher[] = [
 //     totalReviews: 22,
 //     subject: "Islamic Studies",
 //     gender: "Female",
-//     profileImg: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg"
+//     profileImage: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg"
 //   },
 //   {
 //     userId: ObjectId('65e067cee93f33d690eedbb4'),
@@ -305,7 +305,7 @@ export const teachers: Teacher[] = [
 //     totalReviews: 25,
 //     subject: "Punjabi",
 //     gender: "Male",
-//     profileImg: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
+//     profileImage: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
 //   },
 //   {
 //     userId: ObjectId('65e067d8e93f33d690eedbb7'),
@@ -321,7 +321,7 @@ export const teachers: Teacher[] = [
 //     totalReviews: 28,
 //     subject: "Chemistry",
 //     gender: "Female",
-//     profileImg: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
+//     profileImage: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
 //   },
 //   {
 //     userId: ObjectId('65e067e2e93f33d690eedbba'),
@@ -337,7 +337,7 @@ export const teachers: Teacher[] = [
 //     totalReviews: 20,
 //     subject: "Computer Science",
 //     gender: "Male",
-//     profileImg: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
+//     profileImage: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
 //   },
 //   {
 //     userId: ObjectId('65e067ebe93f33d690eedbbd'),
@@ -353,7 +353,7 @@ export const teachers: Teacher[] = [
 //     totalReviews: 18,
 //     subject: "Arabic",
 //     gender: "Female",
-//     profileImg: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
+//     profileImage: "https://static.vecteezy.com/system/resources/previews/008/437/407/original/female-icon-for-website-symbol-presentation-free-vector.jpg",
 //   },
 //   {
 //     userId: ObjectId('65e067f3e93f33d690eedbc0'),
@@ -369,6 +369,6 @@ export const teachers: Teacher[] = [
 //     totalReviews: 16,
 //     subject: "Maths",
 //     gender: "Male",
-//     profileImg: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
+//     profileImage: "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small/man-avatar-icon-free-vector.jpg",
 //   },
 // ])

@@ -11,13 +11,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
 
 export function UserNav() {
   const { setAuth } = useAuth();
+
+  const userType = localStorage.getItem("userType");
+
   const handleLogOut = () => {
-    // removing token from local storage and refreshing the page 
-    localStorage.removeItem("accessToken");
     localStorage.setItem("isAuthenticated", "false");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("expiresIn");
     localStorage.removeItem("userType");
     setAuth(null);
     window.location.reload();
@@ -44,7 +50,9 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            Profile
+            <Link to={`/profile/${userType}`}>
+              Profile
+            </Link>
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem>
@@ -60,6 +68,6 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogOut}>Log out</DropdownMenuItem>
       </DropdownMenuContent>
-    </DropdownMenu>
+    </DropdownMenu >
   );
 }
