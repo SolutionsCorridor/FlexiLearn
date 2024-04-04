@@ -55,21 +55,23 @@ export function UserAuthForm({
 
     if (authFor === "login") {
       try {
-        const response = (await auth(
-          authFor,
-          email,
-          password,
-          userType || ""
-        )) as AxiosResponse;
+        const response = (await auth(authFor, email, password, userType || "")) as AxiosResponse;
         setIsLoading(false);
-        console.log("Login Successful", response.data);
         setAuth(response.data);
-        // redirect to home page
+
+        // Redirect based on the user's role
+        const { role } = response.data;
+        if (role === "admin") {
+          navigate(`/dashboard`);
+        } else if (role === "student" || role === "teacher" || role === "parent") {
+          navigate(`/profile/${role}`);
+        } else {
+          // Handle other roles or fallback
+          navigate(`/`);
+        }
+
         toast.success("Login Successful");
-        console.log(`Redirecting to /profile/${response.data.user._id} in 2 seconds...`)
-        setTimeout(() => {
-          navigate(`/profile/${response.data.user.role}`);
-        }, 2000);
+
       } catch (error) {
         setIsLoading(false);
         if (error instanceof Error) {
@@ -136,7 +138,7 @@ export function UserAuthForm({
           </div>
           <Button
             disabled={isLoading}
-            className={cn(buttonVariants({ variant: "primary" }))}
+            className={cn(buttonVariants({ variant: "default" }))}
           >
             {isLoading && (
               <Icons.spinner className="w-4 h-4 mr-2 animate-spin" />

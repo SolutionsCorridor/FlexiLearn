@@ -7,6 +7,7 @@ import { teacherRoutes } from "@/routes/teacher-routes";
 import PublicRoute from "@/routes/public-route";
 import ProtectedRoute from "@/routes/protect-route";
 import { parentRoutes } from "./routes/parent-routes";
+import { adminRoutes } from "./routes/admin-routes";
 
 function App() {
   return (
@@ -30,6 +31,11 @@ function App() {
         {/* Parent Routes */}
         <Route element={<ProtectedRoute roles="parent" />}>
           {parentRoutes}
+        </Route>
+
+        {/* Admin Routes */}
+        <Route element={<ProtectedRoute roles="admin" />}>
+          {adminRoutes}
         </Route>
       </Route>
     </Routes>

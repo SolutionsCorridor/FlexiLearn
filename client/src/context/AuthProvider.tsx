@@ -66,8 +66,6 @@ export const AuthProvider: FunctionComponent<AuthProviderProps> = ({
           }
         );
 
-        console.log('response', response);
-
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
         localStorage.setItem("expiresIn", response.data.expiresIn);

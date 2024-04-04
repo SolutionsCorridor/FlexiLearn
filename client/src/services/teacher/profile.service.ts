@@ -5,7 +5,6 @@ import { Teacher } from '@/constants/types';
 export const getTeacher = async (id: string): Promise<Teacher> => {
   try {
     const response = await axios.get<Teacher>(`${SERVER_URL}/teacher/${id}`);
-    console.log(response)
     return response.data;
   } catch (error) {
     console.error('Error fetching teachers:', error);

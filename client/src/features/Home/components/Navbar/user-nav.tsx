@@ -28,6 +28,7 @@ export function UserNav() {
     setAuth(null);
     window.location.reload();
   };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

@@ -16,7 +16,7 @@ export class AuthService {
     private userModel: Model<User>,
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async login(dto: LoginDto) {
     const user = await this.validateUser(dto);
@@ -31,7 +31,8 @@ export class AuthService {
     };
 
     return {
-      user:userResponse,
+      user: userResponse,
+      role: userResponse.role,
       backendTokens: {
         accessToken: await this.jwtService.signAsync(payload, {
           expiresIn: '24h',
