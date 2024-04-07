@@ -200,4 +200,13 @@ export class TeacherService {
         }
     }
 
+    async updateComments(teacherId: string, adminComments: string) {
+        const updatedTeacherProfile = await this.teacher.findOneAndUpdate(
+            { userId: teacherId },
+            { adminComments },
+            { new: true }
+        );
+        return updatedTeacherProfile;
+    }
+
 }

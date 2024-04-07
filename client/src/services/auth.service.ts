@@ -76,9 +76,7 @@ export const changeStatus = async (userId: string, status: string) => {
     try {
         const response = await axios.put(
             `${SERVER_URL}/user/change-status/${userId}`,
-            {
-                status,
-            }
+            { status }
         );
 
         return response;

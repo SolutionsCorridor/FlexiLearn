@@ -38,6 +38,13 @@ export class UserController {
     return user;
   }
 
+  @UseGuards(JwtAdminGuard)
+  @Put('change-status/:id')
+  async changeStatus(@Param('id') id: string, @Body() body: any) {
+    const { status } = body;
+    return await this.userService.changeStatus(id, status);
+  }
+
   // @Post('register-admin')
   // async registerAdmin(@Body() body: any) {
   //   return await this.userService.createAdmin(body);

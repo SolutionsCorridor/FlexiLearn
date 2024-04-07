@@ -36,4 +36,9 @@ export class TeacherController {
         return this.teacherService.deleteTeacher(teacherId);
     }
 
+    @Put('comments/:teacherId')
+    updateComments(@Param('teacherId') teacherId: string, @Body() body: any) {
+        const { adminComments } = body;
+        return this.teacherService.updateComments(teacherId, adminComments);
+    }
 }

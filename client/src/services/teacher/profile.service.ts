@@ -13,24 +13,27 @@ export const getTeacher = async (id: string): Promise<Teacher> => {
 };
 
 export const getTeachers = async (): Promise<Teacher[]> => {
-    try {
-      const response = await axios.get<Teacher[]>(`${SERVER_URL}/teacher`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching teachers:', error);
-      return [];
-    }
-  };
+  try {
+    const response = await axios.get<Teacher[]>(`${SERVER_URL}/teacher`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching teachers:', error);
+    return [];
+  }
+};
 
 export const postTeacher = async (data: any) => {
-    return await axios.post(`${SERVER_URL}/teacher`, data);
+  return await axios.post(`${SERVER_URL}/teacher`, data);
 };
 
 export const updateTeacher = async (id: string, data: any) => {
-    console.log(data);
-    return await axios.put(`${SERVER_URL}/teacher/${id}`, data);
+  return await axios.put(`${SERVER_URL}/teacher/${id}`, data);
 }
 
 export const deleteTeacher = async (id: string) => {
-    return await axios.delete(`${SERVER_URL}/teacher/${id}`);
+  return await axios.delete(`${SERVER_URL}/teacher/${id}`);
+}
+
+export const updateComments = async (id: string, adminComments: string) => {
+  return await axios.put(`${SERVER_URL}/teacher/comments/${id}`, { adminComments });
 }

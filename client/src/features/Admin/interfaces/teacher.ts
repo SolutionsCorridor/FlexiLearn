@@ -23,4 +23,5 @@ export interface ITeacher {
     cv: string;
     meetingDate: string;
     meetingTime: string;
+    adminComments: string;
 }
