@@ -11,6 +11,11 @@ export class TeacherController {
         return this.teacherService.getTeachers();
     }
 
+    @Post('quiz/result')
+    saveQuiz(@Body() body: { quizId: string; score: number; userId: string }) {
+        return this.teacherService.saveQuizResult(body);
+    }
+
     @Get(':teacherId')
     findOne(@Param('teacherId') teacherId: string) {
         return this.teacherService.getTeacher(teacherId);

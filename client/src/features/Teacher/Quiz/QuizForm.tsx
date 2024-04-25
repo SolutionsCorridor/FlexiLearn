@@ -42,8 +42,7 @@ const MCQ: React.FC<MCQProps> = ({ question, options, selectedAnswer, onAnswer, 
   </div>
 );
 
-// QuizPage component
-// QuizPage component
+
 const QuizPage: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<{ [key: number]: string }>({});
@@ -82,7 +81,7 @@ const QuizPage: React.FC = () => {
     fetchQuizData();
   }, [quizId]);
 
-  // Timer countdown
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (timeLeft > 0 && !isSubmitted) {
@@ -94,6 +93,15 @@ const QuizPage: React.FC = () => {
   const handleAnswer = (questionIndex: number, option: string) => {
     if (!isSubmitted && timeLeft > 0) {
       setAnswers((prev) => ({ ...prev, [questionIndex]: option }));
+    }
+  };
+
+  const saveQuizResult = async (score: number) => {
+    const userId = localStorage.getItem('userId');
+    try {
+      await axios.post(`${SERVER_URL}/teacher/quiz/result`, { quizId, score, userId });
+    } catch (error) {
+      console.error('Error saving quiz result:', error);
     }
   };
 
@@ -132,6 +140,7 @@ const QuizPage: React.FC = () => {
       // Redirect if score is more than 80%
       if (scorePercentage > 80) {
         toast.success(`Your score: ${scorePercentage.toFixed(2)}%`);
+        saveQuizResult(scorePercentage);
         setTimeout(() => {
           navigate('/teacher/meeting');
         }, 2000);

@@ -9,7 +9,7 @@ export class QuizService {
     private openai;
     constructor(@InjectModel(Quiz.name) private readonly quizModel: Model<Quiz>) {
         this.openai = new OpenAI({
-            apiKey: `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`,
+            apiKey: process.env.OPENAI_API_KEY,
         });
     }
 

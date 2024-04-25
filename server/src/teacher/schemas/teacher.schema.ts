@@ -8,6 +8,12 @@ export class Teacher extends Document {
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
     userId: MongooseSchema.Types.ObjectId;
 
+    @Prop({ type: MongooseSchema.Types.ObjectId })
+    quizId: MongooseSchema.Types.ObjectId;
+
+    @Prop({ default: "" })
+    quizScore: number;
+
     @Prop()
     fullName: string;
 
@@ -76,6 +82,8 @@ export class Teacher extends Document {
 
     @Prop({ default: "" })
     adminComments: string;
+
+
 }
 
 export const TeacherSchema = SchemaFactory.createForClass(Teacher);

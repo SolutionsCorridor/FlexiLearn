@@ -22,8 +22,22 @@ export class TeacherService {
     folderName = 'teacher/profile';
 
     async getTeachers() {
-        const teachers = await this.teacher.find().lean();
+        const teachers = await this.teacher.find({ quizScore: { $ne: null } }).lean();
         return teachers;
+    }
+
+    async saveQuizResult(data: { quizId: string; score: number; userId: string }) {
+        try {
+            const result = await this.teacher.updateOne(
+                { userId: data.userId }, 
+                { $set: { quizId: data.quizId, quizScore: data.score } }, 
+                { new: true } 
+            );
+            return result;
+        } catch (error) {
+            console.error('Error updating quiz result in the database:', error);
+            throw new Error('Failed to update quiz result');
+        }
     }
 
     async getTeacher(teacherId: string) {
