@@ -24,4 +24,5 @@ export interface ITeacher {
     meetingDate: string;
     meetingTime: string;
     adminComments: string;
+    quizScore: number;
 }

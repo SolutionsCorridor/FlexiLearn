@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { changeStatus } from "@/services/auth.service";
 import { updateComments } from "@/services/teacher/profile.service";
+import toast, { Toaster } from "react-hot-toast";
 
 interface IUser {
     email: string;
@@ -27,6 +28,7 @@ const Teacher = ({ teacher }: { teacher: ITeacher }) => {
     const [user, setUser] = useState<IUser>({} as IUser);
     const [adminComments, setAdminComments] = useState("");
     const [status, setStatus] = useState("");
+    const [updating, setUpdating] = useState(false);
 
     useEffect(() => {
         axios.get(`${SERVER_URL}/user/${teacher.userId}`)
@@ -49,10 +51,12 @@ const Teacher = ({ teacher }: { teacher: ITeacher }) => {
     }
 
     const handleUpdate = () => {
+        setUpdating(true);
 
         if (status !== user.status) {
             changeStatus(teacher.userId, status)
                 .then((response) => {
+                    toast.success("Status updated successfully");
                     console.log("Status updated successfully:", response.data);
                 })
                 .catch((error) => {
@@ -99,6 +103,7 @@ const Teacher = ({ teacher }: { teacher: ITeacher }) => {
     }
 
     const MeetingInfo: { [key: string]: any } = {
+        "QUIZ SCORE": teacher.quizScore || "NOT ATTEMPTED YET",
         "MEETING DATE": teacher.meetingDate,
         "MEETING TIME": teacher.meetingTime,
         "COMMENTS": (
@@ -134,6 +139,7 @@ const Teacher = ({ teacher }: { teacher: ITeacher }) => {
 
     return (
         <>
+        <Toaster/>
             <div className="relative flex flex-col justify-end text-center pb-8 bg-[url('assets/images/castle.jpg')] h-48 text-4xl text-white">
                 <div className="absolute top-0 right-0 px-4 py-2 bg-green-600 rounded-bl-lg text-2xl">
                     {user.status}
@@ -225,9 +231,9 @@ const Teacher = ({ teacher }: { teacher: ITeacher }) => {
                             </div>
                         ))}
 
-                        <Button onClick={handleUpdate} className="w-1/4 self-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                            Update
-                        </Button>
+<Button onClick={handleUpdate} className="w-1/4 self-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            {updating ? 'Updating...' : 'Update'}
+        </Button>
                     </div>
                 )}
 

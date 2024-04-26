@@ -22,8 +22,18 @@ export class TeacherService {
     folderName = 'teacher/profile';
 
     async getTeachers() {
-        const teachers = await this.teacher.find({ quizScore: { $ne: null } }).lean();
-        return teachers;
+        try {
+            const approvedUsers = await this.user.find({ status: "Approved" }).lean();
+    
+            const userIds = approvedUsers.map(user => user._id);
+    
+            const approvedTeachers = await this.teacher.find({ userId: { $in: userIds } }).lean();
+    
+            return approvedTeachers;
+        } catch (error) {
+            console.error("Error fetching approved teachers:", error);
+            throw error;
+        }
     }
 
     async saveQuizResult(data: { quizId: string; score: number; userId: string }) {

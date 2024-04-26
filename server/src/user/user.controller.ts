@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Query, Put, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { JwtAdminGuard } from 'src/auth/guards/admin.guard';
@@ -9,24 +9,19 @@ export class UserController {
 
   @UseGuards(JwtAdminGuard)
   @Get()
-  async getAllUsers() {
-    const users = await this.userService.findAll();
+  async getAllUsers(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('query') query: string,
+  ) {
+    // Calculate skip value based on page number and limit
+    const skip = (page - 1) * limit;
+    
+    // Fetch users with pagination and search query
+    const users = await this.userService.findAll(skip, limit, query);
 
-    const usersWithDetails = await Promise.all(
-      users.map(async (user) => {
-        const userId = user._id.toString();
-        const userDetails = await this.userService.findUserDetails(
-          userId,
-          user.role,
-        );
-        return { ...user, userDetails };
-      }),
-    );
-
-    // remove users with role admin
-    const filteredUsers = usersWithDetails.filter(
-      (user) => user.role !== 'admin',
-    );
+    // Remove users with role 'admin' if necessary
+    const filteredUsers = users.filter((user) => user.role !== 'admin');
 
     return filteredUsers;
   }

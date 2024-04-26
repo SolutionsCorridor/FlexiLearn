@@ -42,9 +42,60 @@ export class UserService {
     };
   }
 
-  async findAll() {
-    return await this.userModel.find().lean();
-  }
+  async findAll(skip: number, limit: number, query: string) {
+    let usersQuery = this.userModel.find();
+
+    // Apply search query if provided
+    if (query) {
+      usersQuery = usersQuery.find({
+        $or: [
+          { email: { $regex: query, $options: 'i' } },
+          { role: { $regex: query, $options: 'i' } },
+          { status: { $regex: query, $options: 'i' } },
+        ],
+      });
+    }
+
+    // Apply pagination
+    usersQuery = usersQuery.skip(skip).limit(limit);
+
+    // Execute the query to get users
+    const users = await usersQuery.lean();
+
+    // Manually construct the response with userDetails from related tables
+    const response = await Promise.all(users.map(async (user) => {
+        // Fetch fullName and profileImage from related tables based on user's role
+        let fullName, profileImage;
+        switch (user.role) {
+            case 'teacher':
+                const teacher = await this.teacherModel.findOne({ userId: user._id }).lean();
+                fullName = teacher.fullName;
+                profileImage = teacher.profileImage;
+                break;
+            case 'parent':
+                const parent = await this.parentModel.findOne({ userId: user._id }).lean();
+                fullName = parent.fullName;
+                profileImage = parent.profileImage;
+                break;
+            case 'student':
+                const student = await this.studentModel.findOne({ userId: user._id }).lean();
+                fullName = student.fullName;
+                profileImage = student.profileImage;
+                break;
+            default:
+                fullName = '';
+                profileImage = '';
+        }
+        return { ...user, userDetails: { fullName, profileImage } };
+    }));
+
+    // Exclude password field from the response
+    response.forEach(user => delete user.password);
+
+    return response;
+}
+
+
 
   async findUserDetails(userId: string, role: string): Promise<any> {
     let userDetails = null;
