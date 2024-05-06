@@ -14,7 +14,7 @@ const Explore = () => {
         descriptionColor='text-gray-600'
       />
       <AnimatedCard 
-      link='/lms'
+      link='/dashboard'
       icon={Globe}
       iconColor='bg-blue-500'
       title='Explore Online Learning'
