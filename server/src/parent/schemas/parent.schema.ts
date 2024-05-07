@@ -9,7 +9,7 @@ export class Parent extends Document {
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
     userId: MongooseSchema.Types.ObjectId;
 
-    @Prop({ unique: true })
+    @Prop({ default: "" })
     fullName: string;
 
     @Prop({ default: "" })

@@ -22,6 +22,9 @@ export const login = async (email: string, password: string) => {
                 password,
             }
         );
+
+        console.log("Login response", response.data);
+
         // Store the token in local storage
         localStorage.setItem("accessToken", response.data.backendTokens.accessToken);
         localStorage.setItem("refreshToken", response.data.backendTokens.refreshToken);

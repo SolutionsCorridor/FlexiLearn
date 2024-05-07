@@ -11,7 +11,7 @@ export class Student extends Document {
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Parent' })
     parentId?: MongooseSchema.Types.ObjectId;
 
-    @Prop({ unique: true })
+    @Prop({ default: "" })
     fullName: string;
 
     @Prop({ default: "" })

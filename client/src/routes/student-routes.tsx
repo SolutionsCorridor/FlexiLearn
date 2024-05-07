@@ -5,6 +5,8 @@ import HomeSchooling from "@/pages/HomeSchooling/HomeSchooling";
 import TeacherProfileForStudent from "@/pages/Profiles/TeacherProfileForStudent";
 import Explore from "@/pages/Explore";
 import DashboardPage from "@/pages/Student/Dashboard";
+import Appointement from "@/pages/Profiles/Meeting";
+
 // Define student-specific routes as an array
 export const studentRoutes = [
   <Route
@@ -15,6 +17,7 @@ export const studentRoutes = [
   <Route path="/location" element={<HomeSchooling />} />,
   <Route path="/teacher/profile/:id" element={<TeacherProfileForStudent />} />,
   <Route path="/explore" element={<Explore />} />,
-  <Route path='/student-dashboard' element={<DashboardPage/>} />,
+  <Route path='/student-dashboard' element={<DashboardPage />} />,
+  <Route path="/appointement/:token" element={<Appointement />} />,
   // Add more student-specific routes here
 ];

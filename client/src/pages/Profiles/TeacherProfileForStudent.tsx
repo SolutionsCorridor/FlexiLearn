@@ -1,10 +1,10 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getTeacher } from '@/services/teacher/profile.service';
 // import Image from 'react-image';
 // import { AcademicCapIcon, DocumentCheckIcon, StarIcon } from 'react-heroicons';
 import { Teacher } from '@/constants/types';
-import { UsersIcon,StarIcon,CheckIcon } from 'lucide-react';
+import { UsersIcon, StarIcon, CheckIcon } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Loader from '@/components/shared/Loader';
 
@@ -34,7 +34,10 @@ const TeacherProfileForStudent = () => {
   }, [id]);
 
   const goToBookAppointment = () => {
-    navigate(`/teacher/meeting`);
+    // generate a random token
+    const token = Math.random().toString(18);
+
+    navigate(`/appointement/${token}`);
   };
 
   const TabsStyles = {
@@ -66,15 +69,15 @@ const TeacherProfileForStudent = () => {
           />
         </div>
         <div className='flex flex-col gap-1'>
-            <h2 className='text-3xl font-bold'>
-                {teacherData?.fullName ?? ''}
-            </h2>
-            <h4 className='text-lg text-gray-500'>
-                {teacherData?.gender ?? ''}
-            </h4>
-            <h3 className='text-xl text-gray-300'>
-                {teacherData?.subject ?? ''}
-            </h3>
+          <h2 className='text-3xl font-bold'>
+            {teacherData?.fullName ?? ''}
+          </h2>
+          <h4 className='text-lg text-gray-500'>
+            {teacherData?.gender ?? ''}
+          </h4>
+          <h3 className='text-xl text-gray-300'>
+            {teacherData?.subject ?? ''}
+          </h3>
         </div>
         <div className='flex flex-row flex-wrap gap-8'>
           <div className='flex flex-row flex-wrap gap-2'>
@@ -87,7 +90,7 @@ const TeacherProfileForStudent = () => {
             <CheckIcon className='text-green-400 h-6 w-6' />
             <div>
               <span className='text-slate-400'>
-              Total Reviews: 
+                Total Reviews:
               </span>
               {" "}
               {teacherData?.totalReviews}
