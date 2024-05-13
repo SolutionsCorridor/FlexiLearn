@@ -1,29 +1,30 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getTeacher } from '@/services/teacher/profile.service';
-// import Image from 'react-image';
-// import { AcademicCapIcon, DocumentCheckIcon, StarIcon } from 'react-heroicons';
 import { Teacher } from '@/constants/types';
 import { UsersIcon, StarIcon, CheckIcon } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Loader from '@/components/shared/Loader';
+import axios from 'axios';
+import { SERVER_URL } from '@/config/config';
 
 const TeacherProfileForStudent = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const [teacherData, setTeacherData] = useState<Teacher>();
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [appointmentDate, setAppointmentDate] = useState<string>("");
+  const [appointmentTime, setAppointmentTime] = useState<string>("");
+  const [isBooked, setIsBooked] = useState(false);
 
 
   useEffect(() => {
     if (id) {
-      console.log(id)
       setLoading(true);
       getTeacher(id)
         .then((res) => {
           setTeacherData(res);
-          console.log(res);
           setLoading(false);
         })
         .catch((err) => {
@@ -33,11 +34,58 @@ const TeacherProfileForStudent = () => {
     }
   }, [id]);
 
-  const goToBookAppointment = () => {
-    // generate a random token
-    const token = Math.random().toString(18);
+  useEffect(() => {
+    const studentId = localStorage.getItem('userId');
 
-    navigate(`/appointement/${token}`);
+    const teacherId = id;
+
+    axios.get(`${SERVER_URL}/appointment/student/${studentId}/teacher/${teacherId}`)
+      .then((res: any) => {
+        // convert date from yyyy-mm-dd format to dd MMM yyyy format
+        const date = new Date(res.data[0].date);
+        const formattedDate = date.toLocaleDateString('en-US', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+        setAppointmentDate(formattedDate);
+
+        const time = res.data[0].time;
+        const [hours, minutes] = time.split(':');
+        const isPM = hours >= 12;
+        const formattedHours = isPM ? hours - 12 : hours;
+        const formattedMinutes = minutes;
+        setAppointmentTime(`${formattedHours}:${formattedMinutes} ${isPM ? 'PM' : 'AM'}`);
+
+        setIsBooked(true);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+  }, [id]);
+
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const bookAppointment = () => {
+
+    axios.post(`${SERVER_URL}/appointment`, {
+      studentId: localStorage.getItem('userId'),
+      teacherId: id,
+      date: appointmentDate,
+      time: appointmentTime,
+    });
+
+    closeModal();
+
+    window.location.reload();
   };
 
   const TabsStyles = {
@@ -103,13 +151,38 @@ const TeacherProfileForStudent = () => {
             </div>
           </div>
         </div>
-        <div className=''>
-          <button
-            className='bg-green-600 p-6 rounded-2xl text-lg'
-            onClick={goToBookAppointment}
-          >
-            Book an Appointment
-          </button>
+        <div className='flex flex-row flex-wrap gap-8'>
+          {isBooked && (
+            <div className='flex flex-col gap-4'>
+              <h3 className='text-lg'>
+                Your appointment is booked for
+              </h3>
+              <div className='flex flex-col gap-2'>
+                <div className='flex flex-row gap-4'>
+                  <span className='text-slate-400'>
+                    Date:
+                  </span>
+                  {" "}
+                  {appointmentDate}
+                </div>
+                <div className='flex flex-row gap-4'>
+                  <span className='text-slate-400'>
+                    Time:
+                  </span>
+                  {" "}
+                  {appointmentTime}
+                </div>
+              </div>
+            </div>
+          )}
+          {!isBooked && (
+            <button
+              className='bg-green-600 p-6 rounded-2xl text-lg'
+              onClick={openModal}
+            >
+              Book an Appointment
+            </button>
+          )}
         </div>
       </div>
 
@@ -159,6 +232,55 @@ const TeacherProfileForStudent = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 overflow-y-auto z-50 flex items-center justify-center">
+          <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+          </div>
+          <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+            <div className="px-6 py-4">
+              {/* Modal content */}
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-bold">Book an Appointment</h3>
+                <button className="text-gray-500 hover:text-gray-700" onClick={closeModal}>
+                  <span className="sr-only">Close</span>
+                  <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700">Date</label>
+                <input
+                  type="date"
+                  value={appointmentDate}
+                  onChange={(e) => setAppointmentDate(e.target.value)}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                />
+              </div>
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700">Time</label>
+                <input
+                  type="time"
+                  value={appointmentTime}
+                  onChange={(e) => setAppointmentTime(e.target.value)}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                />
+              </div>
+              <div className="mt-6 flex justify-end">
+                <button
+                  className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+                  onClick={bookAppointment}
+                >
+                  Book
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
